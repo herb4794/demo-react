@@ -9,6 +9,10 @@ function App() {
     return { id: arr.code }
   })
   openControl(openArr)
+  
+  setTimeout(() => {
+    window.location.reload()
+  }, 600000)
 
   return (
     <div className="App">
