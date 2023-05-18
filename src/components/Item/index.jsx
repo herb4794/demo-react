@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useStateValue } from '../../context/StateProvider'
 const Item = (props) => {
 
   const { code, name, images, priceList, summary, preview, open } = props
@@ -30,15 +29,14 @@ const Item = (props) => {
       setSession()
       const sessionResult = sessionStorage.getItem(id)
       setChanges(sessionResult)
-
-      if (sessionResult === changes) {
-        sessionStorage.removeItem(changes)
-        if (mouse === true) {
-          setMouse(false)
+      if (mouse === true) {
+        setMouse(false)
+        if (sessionResult === changes && sessionResult !== null) {
+          sessionStorage.removeItem(changes)
         }
-        if (mouse === false) {
-          setMouse(true)
-        }
+      }
+      if (mouse === false) {
+        setMouse(true)
       }
     }
   }
@@ -61,33 +59,41 @@ const Item = (props) => {
     preview(name, images, summary)
   }
 
-  return (
-    <div className='group'>
-      <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-        <img
-          src={images[0].url}
-          className="h-full w-full object-cover object-center group-hover:opacity-75"
-        />
-      </div>
-      <h3 className="mt-4 text-sm text-gray-700">{name}</h3>
-      <p className="mt-1 text-lg font-medium text-gray-900">{priceList.value}</p>
-      <Link onClick={() => handlePreview(code, images[0].url, summary)} to={'/Details'}>Details</Link>
-      <div>
-        <button type='button' onClick={handleMouse(code)} style={{ backgroundColor: mouse ? 'orange' : '#bbb', backgroundColor: chose(code) || mouse ? 'orange' : '#bbb' }}>preview</button>
-        {
-          mouse || chose(code) ? (
-            <div>
-              {
-                code
-              }
-              <br />
-              <button type="button" onClick={handleClick()} style={{ backgroundColor: select ? 'orange' : '#ddd' }}> select</button>
-            </div>
-          ) : ''
-        }
-      </div>
+  console.log("mouse is :" + mouse);
+  console.log("select is :" + select);
 
-    </div>
+  return (
+    <div className="card">
+      <div className="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+        <img src={images[0].url} className="img-fluid" />
+        <a href="#!">
+          <div className="mask" style={{ backgroundColor: 'rgba(251, 251, 251, 0.15)' }}></div>
+        </a>
+      </div >
+      <div className="card-body">
+        <h5 className="card-title">{name}</h5>
+        <Link onClick={() => handlePreview(code, images[0].url, summary)} to={'/Details'} className="btn btn-primary">Detail</Link>
+        <p className="card-text">The road to truth is long and arduous,
+          And the philosopher must forge ahead alone.
+          But in his mind, thoughts and ideas take wing,
+          Free to roam and soar, unshackled by convention.</p>
+      </div>
+      <button type='button' onClick={handleMouse(code)} style={{ backgroundColor: mouse ? 'orange' : '#bbb', backgroundColor: chose(code) || mouse ? 'orange' : '#bbb' }}>preview</button>
+      {
+        mouse || chose(code) ? (
+          <div>
+            {
+              priceList[0].value
+            }
+            <br />
+            <button type="button" onClick={handleClick()} style={{ backgroundColor: select ? 'orange' : '#ddd' }}> select</button>
+          </div>
+        ) : ''
+      }
+    </div >
+
+
+
 
   )
 }

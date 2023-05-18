@@ -8,7 +8,7 @@ import { Outlet } from 'react-router-dom'
 
 const List = () => {
 
-  const { product, openControl, open } = useStateValue()
+  const { product, open } = useStateValue()
   const [productsItem, setProductsItem] = useState([])
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(4);
@@ -34,16 +34,11 @@ const List = () => {
     setStore()
   }
 
-  const openArr = product[0].map((arr) => {
-    return { id: arr.code }
 
-  })
-
-  openControl(openArr)
 
 
   return (
-    <div className="bg-white">
+    <div className="container-full">
       <Header />
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <h2 className="text-2xl font-bold tracking-tight text-gray-900">Customers also purchased</h2>
@@ -62,19 +57,20 @@ const List = () => {
         </div >
 
       </div>
-      <div className='group'>
-        <ReactPaginate
-          onPageChange={paginate}
-          pageCount={Math.ceil(product[0].length / postsPerPage)}
-          previousLabel={'Prev'}
-          nextLabel={'Next'}
-          containerClassName={'pagination'}
-          pageLinkClassName={'page-number'}
-          previousLinkClassName={'page-number'}
-          nextLinkClassName={'page-number'}
-          activeLinkClassName={'active'}
-        />
-      </div>
+        <nav className='text-center' aria-label="Page navigation example">
+          <ReactPaginate
+            onPageChange={paginate}
+            pageCount={Math.ceil(product[0].length / postsPerPage)}
+            previousLabel={'Prev'}
+            nextLabel={'Next'}
+            containerClassName={'pagination justify-content-center'}
+            pageLinkClassName={'page-link'}
+            previousLinkClassName={'page-number'}
+            nextLinkClassName={'page-number'}
+            activeLinkClassName={'active'}
+          />
+        </nav >
+
 
 
       <Footer />
