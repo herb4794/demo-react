@@ -14,7 +14,7 @@ const openStart = (arr) => {
 
 export const initalState = {
   product: [data.products],
-  open: openInfo,
+  open: openInfo ? openInfo : [],
   previewData: productInfo,
   openControl: (arr) => {
     openStart(arr)

@@ -5,7 +5,13 @@ import { fetchProductInfo } from '../../utils/fetchData';
 
 const Details = () => {
   const navigate = useNavigate();
-  const { previewData, open } = useStateValue()
+  const { previewData } = useStateValue()
+  const getinfo = fetchProductInfo()
+
+  useEffect(() => {
+    const jsons = JSON.parse(getinfo)
+    setJsonData(jsons)
+  }, [previewData])
 
   function backBtn() {
     const goBack = () => {
@@ -13,48 +19,35 @@ const Details = () => {
     }
     goBack()
   }
-  const json = JSON.parse(previewData)
+  const json = JSON.parse(getinfo)
   const [jsonData, setJsonData] = useState(json)
-  
-  useEffect(() => {
-    const getinfo = fetchProductInfo()
-    const jsons = JSON.parse(getinfo)
-    setJsonData(jsons)
-  }, [previewData])
-  
+
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full" id="home">
-      <div className="py-2 flex-1 flex flex-col items-start justify-center gap-6">
-        <div className="flex items-center gap-2 justify-center bg-orange-100 px-4 py-1 rounded-full">
-          <img src={jsonData?.images} />
 
-          <p className="text-base text-textColor text-center md:text-left md:w-[80%]">
-            {jsonData?.summary}
-          </p>
-
-          <button onClick={() => backBtn()} type="button" className='bg-gradient-to-br from-orange-400
-         to-orange-500 w-full md:w-auto px-4 py-2 rounded-lg hover:shadow-lg 
-         transition-all ease-in-out duration-100'>
-            Back
-          </button>
-        </div>
-        <div className="py-2 flex-1 flex items-center relative">
-
-          <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center lg:px-32 py-4 gap-4 flex-wrap">
-            <div key={previewData?.summary} className="lg:w-190 p-4 bg-cardOverlay backdrop-blur-md rounded-3xl flex flex-col items-center justify-center drop-shadow-lg">
-              <img src={jsonData?.images} />
-              <p className='text-base lg:text-xl font-semibold text-textColor mt-2 lg:mt-4'>
-                {jsonData?.name}
-              </p>
-              <p className="text-[12px] lg:text-sm text-lightTextGray font-semibold my-1 lg:my-3">
-                {jsonData?.summary}
-              </p>
-
+    <section style={{backgroundColor: '#eee'}}>
+      <div className="container py-5">
+        <div className="row justify-content-center">
+          <div className="col-md-8 col-lg-6 col-xl-4">
+            <div className="card text-black">
+              <i className="fab fa-apple fa-lg pt-3 pb-1 px-3"></i>
+              <img src={jsonData?.images}
+                className="card-img-top" alt="#" />
+              <div className="card-body" key={previewData?.summary}>
+                <div className="text-center">
+                  <h5 className="card-title">Believing is seeing</h5>
+                  <p className="text-muted mb-4">{jsonData?.name}</p>
+                </div>
+                <div>
+                  <div className="d-flex justify-content-between">
+                    <span>{jsonData?.summary}R</span>
+                  </div>
+                  <button onClick={() => backBtn()} className="btn btn-danger ">Back</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
     </section>
 
   )

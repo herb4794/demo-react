@@ -1,26 +1,38 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { fetchOpenInfo } from '../../utils/fetchData'
+import { useStateValue } from '../../context/StateProvider'
+
 const Item = (props) => {
+  const openData = fetchOpenInfo()
 
-  const { code, name, images, priceList, summary, preview, open } = props
+  const { code, name, images, priceList, summary, preview, setCart, clearCart } = props
+  const { open } = useStateValue()
 
-  const [select, setSelect] = useState(false)
+  const [select, setSelect] = useState(Boolean)
 
   const [changes, setChanges] = useState()
 
-  const [mouse, setMouse] = useState(false)
+  const [mouse, setMouse] = useState(Boolean)
 
-  const [resultChose, setResultChose] = useState()
+  const [selectRead, setSelectRead] = useState()
+
+
 
   useEffect(() => {
-    setResultChose(open)
+
+
+
   }, [mouse])
+
+  setTimeout(() => {
+    fetchOpenInfo()
+  }, 300);
 
   const handleMouse = (id) => {
     return () => {
-      const data = JSON.parse(resultChose)
-      console.log(data);
-      console.log(resultChose);
+      console.log();
+      const data = JSON.parse(openData)
       const getArr = data.filter((arr) => {
         return arr.id === id
       })
@@ -28,10 +40,12 @@ const Item = (props) => {
       const setSession = () => sessionStorage.setItem(codeString, codeString)
       setSession()
       const sessionResult = sessionStorage.getItem(id)
+
       setChanges(sessionResult)
+
       if (mouse === true) {
         setMouse(false)
-        if (sessionResult === changes && sessionResult !== null) {
+        if (sessionResult === changes) {
           sessionStorage.removeItem(changes)
         }
       }
@@ -43,11 +57,33 @@ const Item = (props) => {
 
   const chose = (id) => {
     return sessionStorage.getItem(id)
+
   }
-  const handleClick = () => {
+
+  const choseSelect = (name) => {
+    return sessionStorage.getItem(name)
+  }
+
+
+  const handleClick = (name, id) => {
     return () => {
+      const setSession = () => sessionStorage.setItem(name, name)
+      setSession()
+      const sessionResult = sessionStorage.getItem(name)
+      setSelectRead(sessionResult)
+      const nameObj = {
+        id: id,
+        name: name
+      }
+      //       console.log(nameObj);
+      setCart(nameObj)
+
       if (select === true) {
         setSelect(false)
+        if (selectRead === sessionResult)
+          clearCart(id)
+        sessionStorage.removeItem(selectRead)
+
       }
       if (select === false) {
         setSelect(true)
@@ -55,43 +91,49 @@ const Item = (props) => {
     }
   }
 
+
   const handlePreview = (name, images, summary) => {
     preview(name, images, summary)
   }
 
-  console.log("mouse is :" + mouse);
-  console.log("select is :" + select);
-
   return (
-    <div className="card">
-      <div className="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-        <img src={images[0].url} className="img-fluid" />
-        <a href="#!">
-          <div className="mask" style={{ backgroundColor: 'rgba(251, 251, 251, 0.15)' }}></div>
-        </a>
-      </div >
-      <div className="card-body">
-        <h5 className="card-title">{name}</h5>
-        <Link onClick={() => handlePreview(code, images[0].url, summary)} to={'/Details'} className="btn btn-primary">Detail</Link>
-        <p className="card-text">The road to truth is long and arduous,
-          And the philosopher must forge ahead alone.
-          But in his mind, thoughts and ideas take wing,
-          Free to roam and soar, unshackled by convention.</p>
-      </div>
-      <button type='button' onClick={handleMouse(code)} style={{ backgroundColor: mouse ? 'orange' : '#bbb', backgroundColor: chose(code) || mouse ? 'orange' : '#bbb' }}>preview</button>
-      {
-        mouse || chose(code) ? (
-          <div>
-            {
-              priceList[0].value
-            }
-            <br />
-            <button type="button" onClick={handleClick()} style={{ backgroundColor: select ? 'orange' : '#ddd' }}> select</button>
-          </div>
-        ) : ''
-      }
-    </div >
+    <div>
 
+
+      <div className="card">
+        <div className="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+          <img src={images[0].url} className="img-fluid" />
+          <a href="#!">
+            <div className="mask" style={{ backgroundColor: 'rgba(251, 251, 251, 0.15)' }}></div>
+          </a>
+        </div >
+        <div className="card-body" key={code}>
+          <h5 className="card-title">{name}</h5>
+          <Link onClick={() => handlePreview(code, images[0].url, summary)} to={'/Details'} className="btn btn-primary">Detail</Link>
+          <p className="card-text">The road to truth is long and arduous,
+            And the philosopher must forge ahead alone.
+            But in his mind, thoughts and ideas take wing,
+            Free to roam and soar, unshackled by convention.</p>
+        </div>
+        <input type="checkbox" className="btn-check" id="btn-check" />
+        <label onClick={handleMouse(code)} className="btn btn-primary" style={{ backgroundColor: chose(code) ? 'orange' : '#bbb' }} htmlFor="btn-check">PerView</label>
+        {
+          chose(code) ? (
+            <div>
+              {
+                priceList[0].value
+              }
+              <br />
+              <input type="checkbox" className="btn-check" id="btn-select" />
+              <label onClick={handleClick(name, code)} className="btn btn-success" style={{ backgroundColor: choseSelect(name) ? 'red' : '#ccc' }} htmlFor="btn-select">Select</label>
+            </div>
+          ) : ''
+
+        }
+
+
+      </div >
+    </div >
 
 
 

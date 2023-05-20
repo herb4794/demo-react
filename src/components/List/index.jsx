@@ -5,23 +5,34 @@ import Item from '../Item'
 import Header from '../Header'
 import Footer from '../Footer'
 import { Outlet } from 'react-router-dom'
+import { fetchOpenInfo, fetchCart } from '../../utils/fetchData'
+import CartContainer from '../CartCotainer'
+
+const openData = fetchOpenInfo()
 
 const List = () => {
+
+  const state = {
+    productName: [
+      { name: "product 1", id: "1" }
+    ]
+  }
 
   const { product, open } = useStateValue()
   const [productsItem, setProductsItem] = useState([])
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(4);
-  const [openResult, setOpenResult] = useState()
-
+  const [openResult, setOpenResult] = useState(openData)
+  const [cartStatus, setCartStatus] = useState(state)
+  const [clearStatus, setClearStatus] = useState(true)
   useEffect(() => {
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = product[0].slice(indexOfFirstPost, indexOfLastPost);
     setProductsItem(currentPosts)
     setOpenResult(open)
-  }, [currentPage])
 
+  }, [currentPage])
   const paginate = ({ selected }) => {
     setCurrentPage(selected + 1);
   };
@@ -34,12 +45,44 @@ const List = () => {
     setStore()
   }
 
+  const setCart = (name) => {
+    const { productName } = cartStatus
+
+    const updateProductName = [name, ...productName]
+
+    setCartStatus({ productName: updateProductName })
 
 
+    localStorage.setItem("cart", JSON.stringify(cartStatus))
+  }
+
+  const clearCart = (id) => {
+    const { productName } = cartStatus
+    const clearProduct = productName.filter((cartObj) => {
+      return cartObj.id !== id
+    })
+    setCartStatus({ productName: clearProduct })
+  }
+
+  const clearAll = () => {
+    return () => {
+      // localStorage.setItem("cart", JSON.stringify(state))
+      // setClearStatus(false)
+      setCartStatus(state)
+    }
+  }
+
+  console.log(cartStatus)
+
+  setTimeout(() => {
+    setOpenResult(openData)
+  }, 200);
 
   return (
     <div className="container-full">
       <Header />
+
+
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <h2 className="text-2xl font-bold tracking-tight text-gray-900">Customers also purchased</h2>
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
@@ -50,6 +93,8 @@ const List = () => {
                 {...product}
                 preview={preview}
                 open={openResult}
+                setCart={setCart}
+                clearCart={clearCart}
               />
             }
             )
@@ -57,21 +102,33 @@ const List = () => {
         </div >
 
       </div>
-        <nav className='text-center' aria-label="Page navigation example">
-          <ReactPaginate
-            onPageChange={paginate}
-            pageCount={Math.ceil(product[0].length / postsPerPage)}
-            previousLabel={'Prev'}
-            nextLabel={'Next'}
-            containerClassName={'pagination justify-content-center'}
-            pageLinkClassName={'page-link'}
-            previousLinkClassName={'page-number'}
-            nextLinkClassName={'page-number'}
-            activeLinkClassName={'active'}
+      <nav className='text-center' aria-label="Page navigation example">
+        <ReactPaginate
+          onPageChange={paginate}
+          pageCount={Math.ceil(product[0].length / postsPerPage)}
+          previousLabel={'Prev'}
+          nextLabel={'Next'}
+          containerClassName={'pagination justify-content-center'}
+          pageLinkClassName={'page-link'}
+          previousLinkClassName={'page-number'}
+          nextLinkClassName={'page-number'}
+          activeLinkClassName={'active'}
+        />
+      </nav >
+
+      {
+        cartStatus.productName?.map((arr) => {
+          return <CartContainer
+            key={arr.id}
+            {...arr}
+            clearAll={clearAll}
+            fetchCart={fetchCart}
           />
-        </nav >
+        })
 
+      }
 
+      {/* <CartContainer fetchCart={fetchCart} clearAll={clearAll} /> */}
 
       <Footer />
       <Outlet />

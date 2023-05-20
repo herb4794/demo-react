@@ -9,10 +9,13 @@ function App() {
     return { id: arr.code }
   })
   openControl(openArr)
-  
-  setTimeout(() => {
-    window.location.reload()
-  }, 600000)
+  // const state = {
+  //   productName: [
+  //     { name: "product 1", id: "1" }
+  //   ]
+  // }
+  // localStorage.setItem("cart", JSON.stringify(state))
+
 
   return (
     <div className="App">
