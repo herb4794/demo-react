@@ -11,10 +11,3 @@ export const fetchOpenInfo = () => {
 
   return openInfo ? openInfo : [];
 }
-
-export const fetchCart = () => {
-  const cartInfo =
-    localStorage.getItem('cart')
-
-  return cartInfo ? cartInfo : [];
-}
