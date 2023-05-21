@@ -5,8 +5,7 @@ import Item from '../Item'
 import Header from '../Header'
 import Footer from '../Footer'
 import { Outlet } from 'react-router-dom'
-import { fetchOpenInfo, fetchCart } from '../../utils/fetchData'
-import CartContainer from '../CartCotainer'
+import { fetchOpenInfo } from '../../utils/fetchData'
 
 const openData = fetchOpenInfo()
 
@@ -24,7 +23,6 @@ const List = () => {
   const [postsPerPage] = useState(4);
   const [openResult, setOpenResult] = useState(openData)
   const [cartStatus, setCartStatus] = useState(state)
-  const [clearStatus, setClearStatus] = useState(true)
   useEffect(() => {
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -64,16 +62,6 @@ const List = () => {
     setCartStatus({ productName: clearProduct })
   }
 
-  const clearAll = () => {
-    return () => {
-      // localStorage.setItem("cart", JSON.stringify(state))
-      // setClearStatus(false)
-      setCartStatus(state)
-    }
-  }
-
-  console.log(cartStatus)
-
   setTimeout(() => {
     setOpenResult(openData)
   }, 200);
@@ -81,7 +69,6 @@ const List = () => {
   return (
     <div className="container-full">
       <Header />
-
 
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <h2 className="text-2xl font-bold tracking-tight text-gray-900">Customers also purchased</h2>
@@ -115,20 +102,6 @@ const List = () => {
           activeLinkClassName={'active'}
         />
       </nav >
-
-      {
-        cartStatus.productName?.map((arr) => {
-          return <CartContainer
-            key={arr.id}
-            {...arr}
-            clearAll={clearAll}
-            fetchCart={fetchCart}
-          />
-        })
-
-      }
-
-      {/* <CartContainer fetchCart={fetchCart} clearAll={clearAll} /> */}
 
       <Footer />
       <Outlet />

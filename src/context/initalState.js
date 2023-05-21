@@ -1,6 +1,6 @@
 // import { fetchData } from "../utils/fetchData"
 import data from './data.json'
-import { fetchProductInfo, fetchOpenInfo } from './../utils/fetchData';
+import { fetchProductInfo, fetchOpenInfo  } from './../utils/fetchData';
 
 const productInfo = fetchProductInfo()
 const openInfo = fetchOpenInfo()
@@ -18,7 +18,6 @@ export const initalState = {
   previewData: productInfo,
   openControl: (arr) => {
     openStart(arr)
-    console.log("openInit")
   }
 }
 sessionStorage.clear();

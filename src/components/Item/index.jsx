@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchOpenInfo } from '../../utils/fetchData'
-import { useStateValue } from '../../context/StateProvider'
 
 const Item = (props) => {
   const openData = fetchOpenInfo()
 
   const { code, name, images, priceList, summary, preview, setCart, clearCart } = props
-  const { open } = useStateValue()
 
   const [select, setSelect] = useState(Boolean)
 
@@ -17,11 +15,7 @@ const Item = (props) => {
 
   const [selectRead, setSelectRead] = useState()
 
-
-
   useEffect(() => {
-
-
 
   }, [mouse])
 
@@ -75,7 +69,6 @@ const Item = (props) => {
         id: id,
         name: name
       }
-      //       console.log(nameObj);
       setCart(nameObj)
 
       if (select === true) {
@@ -91,7 +84,6 @@ const Item = (props) => {
     }
   }
 
-
   const handlePreview = (name, images, summary) => {
     preview(name, images, summary)
   }
@@ -99,8 +91,7 @@ const Item = (props) => {
   return (
     <div>
 
-
-      <div className="card">
+      <div className="card" style={{ backgroundColor: choseSelect(name) ? '#bbb' : 'white' }}>
         <div className="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
           <img src={images[0].url} className="img-fluid" />
           <a href="#!">
@@ -128,14 +119,10 @@ const Item = (props) => {
               <label onClick={handleClick(name, code)} className="btn btn-success" style={{ backgroundColor: choseSelect(name) ? 'red' : '#ccc' }} htmlFor="btn-select">Select</label>
             </div>
           ) : ''
-
         }
-
 
       </div >
     </div >
-
-
 
   )
 }
